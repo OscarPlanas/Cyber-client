@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { GenerarclausComponent } from './generarclaus/generarclaus.component';
+import { GenerarclausComponent } from './components/generarclaus/generarclaus.component';
+import { EncryptDecryptComponent } from './components/encrypt-decrypt/encrypt-decrypt.component';
 
 const routes: Routes = [
-  { path: '', component: GenerarclausComponent },
+  { path: '', component: EncryptDecryptComponent },
 ];
 
 @NgModule({
