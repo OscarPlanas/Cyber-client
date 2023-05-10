@@ -11,6 +11,10 @@ import * as bc from 'bigint-conversion'
 interface EncryptedMessage {
   encrypted2: string;
 }
+interface DecryptedMessage {
+  decrypted: string;
+}
+
 
 @Component({
   selector: 'app-encrypt-decrypt',
@@ -24,10 +28,11 @@ export class EncryptDecryptComponent implements OnInit {
   e: string;
   n: string;
   message: bigint;
+  messagetodecrypt: bigint;
   e2: bigint;
   n2: bigint;
   encryptedMessage: EncryptedMessage | undefined;
-
+  decryptedMessage: DecryptedMessage | undefined;
   /*serie:MyRsaPublicKey={
     e:0n,
     n:0n,
@@ -40,6 +45,8 @@ export class EncryptDecryptComponent implements OnInit {
     this.n2 = 0n;
     
     this.message = 0n;
+    this.messagetodecrypt = 0n;
+
     this.textToEncrypt = this.formBuilder.group({});
     //this.clickEncrypt = false;
     
@@ -48,6 +55,7 @@ export class EncryptDecryptComponent implements OnInit {
   ngOnInit(): void {
     this.textToEncrypt = this.formBuilder.group({
       message: [''],
+      messagetodecrypt: ['']
     });
       console.log("hola");
       this.getPublicKeys();
@@ -87,6 +95,19 @@ export class EncryptDecryptComponent implements OnInit {
     console.log("en base 64 otro " + this.encryptedMessage.encrypted2);
     //res.json({ encrypted: encrypted.toString() });
 
+  }
+
+  decryptMessage = async () => {
+    console.log('Decrypting message:', this.textToEncrypt.value.messagetodecrypt);
+    var mess = bc.base64ToBigint(this.textToEncrypt.value.messagetodecrypt);
+    console.log(mess);
+    
+
+    const res = await axios.post(`http://localhost:3000/todecrypt/${mess}`)
+    console.log(res.data['decrypted']);
+    const decrypted = res.data['decrypted'];
+    console.log("decrypted: " + decrypted);
+    this.decryptedMessage = { decrypted };
   }
 
 }

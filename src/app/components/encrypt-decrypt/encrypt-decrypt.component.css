@@ -37,13 +37,13 @@ label{
 :focus{
 	outline: 1px solid #9B9B9B;
 }
-.create-event-header{
+.encrypt-header{
 	font-family: 'Roboto', sans-serif;
 	font-size: 30px;
 	color: #D4D4D4;
 	margin-bottom: 30px;
 }
-.create-event-button{
+.encrypt-button{
 	background-color: #151515;
 	color: #9F9F9F;
 	border-radius: 7px;
@@ -54,15 +54,15 @@ label{
 	padding: 8px 0;
 	cursor: pointer;
 }
-.create-event-button:hover{
+.encrypt-button:hover{
 	background-color: #1E1E1E;
 }
 
-.create-event-button:active{
+.encrypt-button:active{
 	background-color: #0D0D0D;
 }
 
-.create-event-button:focus{
+.encrypt-button:focus{
 	outline: 1px solid #9B9B9B;
 }
 .limit{
