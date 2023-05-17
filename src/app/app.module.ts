@@ -6,11 +6,17 @@ import { AppComponent } from './app.component';
 import { GenerarclausComponent } from './components/generarclaus/generarclaus.component';
 import { EncryptDecryptComponent } from './components/encrypt-decrypt/encrypt-decrypt.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { ClickOutsideDirective } from './click-outside.directive';
+import { SignVerifyComponent } from './components/sign-verify/sign-verify.component';
+
 @NgModule({
   declarations: [
     AppComponent,
     GenerarclausComponent,
-    EncryptDecryptComponent
+    EncryptDecryptComponent,
+    ClickOutsideDirective,
+    SignVerifyComponent,
+
   ],
   imports: [
     BrowserModule,
