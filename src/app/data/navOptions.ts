@@ -13,14 +13,18 @@ const navOptions = [
         path: '/',
         icon: '../assets/encrypt.png',
         exact: true,
-        auth: true,
     },
     {
         name: 'Sign/Verify',
         path: '/sign-verify',
         icon: '../assets/sign.png',
         exact: true,
-        auth: true,
+    },
+    {
+        name: 'Blind Sign',
+        path: '/blind-sign',
+        icon: '../assets/blind.png',
+        exact: true,
     }
     /*{
         name: 'Create Event',

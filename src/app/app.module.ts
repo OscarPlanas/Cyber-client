@@ -8,6 +8,7 @@ import { EncryptDecryptComponent } from './components/encrypt-decrypt/encrypt-de
 import { ReactiveFormsModule } from '@angular/forms';
 import { ClickOutsideDirective } from './click-outside.directive';
 import { SignVerifyComponent } from './components/sign-verify/sign-verify.component';
+import { BlindSignaturesComponent } from './components/blind-signatures/blind-signatures.component';
 
 @NgModule({
   declarations: [
@@ -16,6 +17,7 @@ import { SignVerifyComponent } from './components/sign-verify/sign-verify.compon
     EncryptDecryptComponent,
     ClickOutsideDirective,
     SignVerifyComponent,
+    BlindSignaturesComponent,
 
   ],
   imports: [
