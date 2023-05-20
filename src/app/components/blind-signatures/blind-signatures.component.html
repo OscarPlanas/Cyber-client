@@ -8,12 +8,12 @@
     </div>
         <button (click)="blind()" class="blind-button" type="button"><b>Blind</b></button>
         <div class="limit">
-          <p>Blind signature:</p>
+          <p>Blind signature: {{blindedMessage?.blinded}}</p>
       </div>
-      <label style=" margin-bottom: 20px;">Verify your blinded message<input formControlName="messagetoverify" type="bigint" placeholder="Message to be decrypted" ></label>
-      <button class="blind-button" type="button"><b>Verify</b></button>
+      <label style=" margin-bottom: 20px;">Verify your blinded message<input formControlName="messagetounblind" type="bigint" placeholder="Message to be decrypted" ></label>
+      <button  (click)="unblind()" class="blind-button" type="button"><b>Verify</b></button>
       <div class="limit">
-        <p>Message verified:</p>
+        <p>Message verified: {{unblindedMessage?.unblinded}}</p>
       </div>
   
     </form>

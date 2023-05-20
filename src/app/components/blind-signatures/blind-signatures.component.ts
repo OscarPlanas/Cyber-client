@@ -8,13 +8,15 @@ import * as bcu from 'bigint-crypto-utils';
 import { MyRsaPublicKey } from 'src/app/models/publickey';
 import * as bc from 'bigint-conversion'
 import { MyRsaPrivateKey } from 'src/app/models/privatekey';
+import { MyRsaKeys } from 'src/app/models/clientKeys';
+import { generate } from 'rxjs';
 
 interface BlindedMessage {
   blinded: string;
 }
 
-interface VerifiedMessage {
-  verified: string;
+interface UnblindedMessage {
+  unblinded: string;
 }
 
 @Component({
@@ -24,78 +26,109 @@ interface VerifiedMessage {
 })
 export class BlindSignaturesComponent implements OnInit {
   textToBlind: FormGroup;
-  e: string;
-  n: string;
-  d: string;
-  e2: bigint;
-  n2: bigint;
-  d2: bigint;
-  messagetoblind: bigint;
-  messagetoverify: bigint;
-  blindedMessage: BlindedMessage | undefined;
-  verifiedMessage: VerifiedMessage | undefined;
+  pubKeyServerPromise: Promise<MyRsaPublicKey>
+  KeysClientPromise: Promise<MyRsaKeys>
+  messagetoblind?: bigint;
+  messagetounblind?: bigint;
+
+  blindedMessage?: BlindedMessage;
+  unblindedMessage?: UnblindedMessage;
+
+  blindingFactorPromise: Promise<bigint>;
+
 
 
   constructor(private formBuilder: FormBuilder) {
-    this.e = "";
-    this.n = "";
-    this.d = "";
-    this.e2 = 0n;
-    this.n2 = 0n;
-    this.d2 = 0n;
-    this.messagetoblind = 0n;
-    this.messagetoverify = 0n;
 
     this.textToBlind = this.formBuilder.group({});
+    this.pubKeyServerPromise = this.getPublicKeys();
+    this.KeysClientPromise = this.generateClientKeys();
+    this.blindingFactorPromise = this.blindingFactor();
+    
+    
 
    }
 
   ngOnInit(): void {
     this.textToBlind = this.formBuilder.group({
       messagetoblind: [''],
-      messagetoverify: ['']
+      messagetounblind: ['']
     });
-    this.getPublicKeys();
+  }
+  
+  blindingFactor = async () => { 
+    const blindingFactor = await bcu.prime(256);
+    console.log('Blinding Factor:', blindingFactor.toString());
+    return blindingFactor;
   }
 
-  getPublicKeys = async () => {
+  getPublicKeys = async (): Promise<MyRsaPublicKey> => {
     const res = await axios.get('http://localhost:3000/publicKey')
     console.log(res.data);
-    
-    this.e = res.data.e;
-    this.n = res.data.n;
-    console.log(this.e);
-    console.log(this.n);
-    this.e2 = bc.base64ToBigint(this.e);
-    this.n2 = bc.base64ToBigint(this.n);
-    console.log(this.e2);
-    console.log(this.n2);
-   /* e: bc.bigintToBase64(this.e),
-      n: bc.bigintToBase64(this.n)
-    }*/
+    const pubKey = MyRsaPublicKey.fromJSON(res.data)
+    console.log(pubKey);
+    return pubKey;
+  }
+
+  generateClientKeys = async () => {
+    const privateKey = (await MyRsaKeys.generateMyRsaKeys()).privateKey;
+    const privateJson = privateKey.toJSON();
+    console.log("clave privada de cliente:");
+    console.log(privateJson);
+    const publicKey = (await MyRsaKeys.generateMyRsaKeys()).publicKey;
+    const publicJson = publicKey.toJSON();
+    console.log("clave publica de cliente:");
+    console.log(publicJson);
+    return {privateKey, publicKey};
   }
 
   blind = async () => {
-    const blindingFactor = await bcu.prime(256);
-    const blindedMessage = (this.messagetoblind * bcu.modPow(blindingFactor, this.e2, this.n2)) % this.n2;
-    console.log('Message to blind' + this.messagetoblind);
-    console.log('Blinded Message:', blindedMessage.toString());
-    console.log(blindedMessage);
-    const privateKey = new MyRsaPrivateKey((this.d2), (this.n2));
-    const blindedSignature = privateKey.sign(blindedMessage);
-    console.log('Blinded Signature:', blindedSignature.toString());
+    console.log('Message to blind' + this.textToBlind.value.messagetoblind);
+    const mess = BigInt(this.textToBlind.value.messagetoblind);
+    console.log(mess);
+    
+    const Keys = await this.KeysClientPromise;
+    console.log(Keys);
+    
+    const pubKey = Keys.publicKey;
+    console.log(pubKey);
+    console.log(pubKey.n);
+    console.log(pubKey.e);
 
-  
+    const blindingFactor = await this.blindingFactorPromise;
+    console.log('Blinding Factor:', blindingFactor.toString());
+    
+    const blindedMessage = (mess * bcu.modPow(blindingFactor, pubKey.e, pubKey.n)) % pubKey.n;
+    console.log('Blinded Message:', blindedMessage);
+    
+    const privateKey = Keys.privateKey;
+    console.log('privatekey: ' + privateKey.d);
+    console.log('privateKey: ' + privateKey.n);
+
+    const blindedSignature = privateKey.sign(blindedMessage); 
+    console.log('Blinded Signature:', blindedSignature.toString());
+    this.blindedMessage = { blinded: blindedSignature.toString() };
+    
+
   }
-  /*  
-  const blindingFactor = await bcu.prime(256);
-  const blindedMessage = (message * bcu.modPow(blindingFactor, publicKey.e, publicKey.n)) % publicKey.n;
-  const blindedSignature = privateKey.sign(blindedMessage);
-  const unblindedSignature = (blindedSignature * bcu.modInv(blindingFactor, publicKey.n)) % publicKey.n;
-  const blindVerified = publicKey.verify(unblindedSignature);
-  console.log('Blinded Message:', blindedMessage.toString());
-  console.log('Blinded Signature:', blindedSignature.toString());
-  console.log('Unblinded Signature:', unblindedSignature.toString());
-  console.log('Blind Verified:', blindVerified.toString());
-  */
+  unblind = async () => {
+    console.log('Message to unblind ' + this.textToBlind.value.messagetounblind);
+    const mess = this.textToBlind.value.messagetounblind;
+    console.log(mess);
+    
+    const blindingFactor = await this.blindingFactorPromise;
+    console.log('Blinding Factor:', blindingFactor.toString());
+
+    const Keys = await this.KeysClientPromise;
+    const pubKey = Keys.publicKey;
+    console.log(pubKey);
+    
+    const res = await axios.post(`http://localhost:3000/tounblind/${mess}/${pubKey.n}/${pubKey.e}/${blindingFactor}`);
+    console.log(res.data);
+    const unblindedMessage = res.data.blindVerified;
+
+    console.log('Unblinded Message:', unblindedMessage.toString());
+    this.unblindedMessage = { unblinded: unblindedMessage.toString() };
+
+  }
 }
