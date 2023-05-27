@@ -25,13 +25,14 @@ const navOptions = [
         path: '/blind-sign',
         icon: '../assets/blind.png',
         exact: true,
-    }
-    /*{
-        name: 'Create Event',
-        path: '/create-event',
-        icon: '../assets/EventArrow.png',
+    },
+    {
+        name: 'Paillier',
+        path: '/paillier',
+        icon: '../assets/paillier.png',
         exact: true,
-    }*/
+    },
+    
 ];
 
 export default navOptions;

@@ -87,10 +87,7 @@ export class BlindSignaturesComponent implements OnInit {
     const mess = BigInt(this.textToBlind.value.messagetoblind);
     console.log(mess);
     
-    const Keys = await this.KeysClientPromise;
-    console.log(Keys);
-    
-    const pubKey = Keys.publicKey;
+    const pubKey = await this.pubKeyServerPromise;
     console.log(pubKey);
     console.log(pubKey.n);
     console.log(pubKey.e);
@@ -98,20 +95,43 @@ export class BlindSignaturesComponent implements OnInit {
     const blindingFactor = await this.blindingFactorPromise;
     console.log('Blinding Factor:', blindingFactor.toString());
     
+    //console.log(privateKey.n);
     const blindedMessage = (mess * bcu.modPow(blindingFactor, pubKey.e, pubKey.n)) % pubKey.n;
     console.log('Blinded Message:', blindedMessage);
     
-    const privateKey = Keys.privateKey;
-    console.log('privatekey: ' + privateKey.d);
-    console.log('privateKey: ' + privateKey.n);
-
-    const blindedSignature = privateKey.sign(blindedMessage); 
-    console.log('Blinded Signature:', blindedSignature.toString());
-    this.blindedMessage = { blinded: blindedSignature.toString() };
+    this.blindedMessage = { blinded: blindedMessage.toString() };
     
-
   }
-  unblind = async () => {
+  
+  signblind = async () => {
+    console.log('Message to unblind ' + this.textToBlind.value.messagetounblind);
+    const mess = this.textToBlind.value.messagetounblind;
+    console.log(mess);
+
+    const blindingFactor = await this.blindingFactorPromise;
+    console.log('Blinding Factor:', blindingFactor.toString());
+
+    const pubKey = await this.pubKeyServerPromise;
+    console.log(pubKey);
+
+    const res = await axios.post(`http://localhost:3000/tounblind/${mess}`);
+    console.log(res.data);
+
+    const blindedSignature = BigInt(res.data.blindedSignature);
+    console.log('Blinded Signature:', blindedSignature.toString());
+
+    const unblindedSignature = (blindedSignature * bcu.modInv(blindingFactor, pubKey.n)) % pubKey.n;
+    
+    console.log('blindindFactor: ' + blindingFactor.toString());
+    console.log('Unblinded Signature:', unblindedSignature.toString());
+    
+    const blindVerified = pubKey.verify(unblindedSignature);
+    console.log('Blind Verified:', blindVerified.toString());
+
+    this.unblindedMessage = { unblinded: blindVerified.toString() };
+  }
+
+  /*unblind = async () => {
     console.log('Message to unblind ' + this.textToBlind.value.messagetounblind);
     const mess = this.textToBlind.value.messagetounblind;
     console.log(mess);
@@ -130,5 +150,7 @@ export class BlindSignaturesComponent implements OnInit {
     console.log('Unblinded Message:', unblindedMessage.toString());
     this.unblindedMessage = { unblinded: unblindedMessage.toString() };
 
-  }
+  }*/
+
+
 }

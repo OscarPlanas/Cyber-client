@@ -9,6 +9,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { ClickOutsideDirective } from './click-outside.directive';
 import { SignVerifyComponent } from './components/sign-verify/sign-verify.component';
 import { BlindSignaturesComponent } from './components/blind-signatures/blind-signatures.component';
+import { PaillierComponent } from './components/paillier/paillier.component';
 
 @NgModule({
   declarations: [
@@ -18,6 +19,7 @@ import { BlindSignaturesComponent } from './components/blind-signatures/blind-si
     ClickOutsideDirective,
     SignVerifyComponent,
     BlindSignaturesComponent,
+    PaillierComponent,
 
   ],
   imports: [
