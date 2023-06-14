@@ -1,0 +1,20 @@
+<div class="sign-container">
+    <form [formGroup]="textToShamir" style="padding-bottom: 10px; width: 800px;" class="sign">
+      <span class="sign-header">Messages</span>
+      <label style="margin-bottom: 20px;">Message<input formControlName="messagetoshamir" type="number"
+          placeholder="Introduce your Threshold"></label>
+      <label style="margin-bottom: 20px;">Threshold<input formControlName="threshold" type="number"
+          placeholder="Introduce your message"></label>
+      <label style="margin-bottom: 20px;">TotalShares<input formControlName="totalshares" type="number"
+          placeholder="Introduce your TotalShares"></label>
+  
+      <button (click)="shamirMessage()" class="sign-button" type="button"><b>Apply shamir</b></button>
+  
+      <!-- Add the following button to trigger the reconstruction -->
+      <button (click)="reconstructSecret()" class="sign-button" type="button"><b>Reconstruct Secret</b></button>
+      <div class="limit">
+        <p>Reconstructed Secret: {{secret}}</p>
+    </div>
+    </form>
+  </div>
+  

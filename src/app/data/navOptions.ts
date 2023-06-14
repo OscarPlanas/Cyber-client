@@ -32,6 +32,12 @@ const navOptions = [
         icon: '../assets/paillier.png',
         exact: true,
     },
+    {
+        name: 'Shamir',
+        path: '/shamir',
+        icon: '../assets/shamir.png',
+        exact: true,
+    }
     
 ];
 

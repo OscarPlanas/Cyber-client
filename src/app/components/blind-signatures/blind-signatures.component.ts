@@ -1,15 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment';
+import { FormBuilder, FormGroup } from '@angular/forms';
 import axios from 'axios';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import * as bcu from 'bigint-crypto-utils';
-import { MyRsaPublicKey } from 'src/app/models/publickey';
-import * as bc from 'bigint-conversion'
-import { MyRsaPrivateKey } from 'src/app/models/privatekey';
 import { MyRsaKeys } from 'src/app/models/clientKeys';
-import { generate } from 'rxjs';
+import { MyRsaPublicKey } from 'src/app/models/publickey';
 
 interface BlindedMessage {
   blinded: string;
@@ -130,27 +124,6 @@ export class BlindSignaturesComponent implements OnInit {
 
     this.unblindedMessage = { unblinded: blindVerified.toString() };
   }
-
-  /*unblind = async () => {
-    console.log('Message to unblind ' + this.textToBlind.value.messagetounblind);
-    const mess = this.textToBlind.value.messagetounblind;
-    console.log(mess);
-    
-    const blindingFactor = await this.blindingFactorPromise;
-    console.log('Blinding Factor:', blindingFactor.toString());
-
-    const Keys = await this.KeysClientPromise;
-    const pubKey = Keys.publicKey;
-    console.log(pubKey);
-    
-    const res = await axios.post(`http://localhost:3000/tounblind/${mess}/${pubKey.n}/${pubKey.e}/${blindingFactor}`);
-    console.log(res.data);
-    const unblindedMessage = res.data.blindVerified;
-
-    console.log('Unblinded Message:', unblindedMessage.toString());
-    this.unblindedMessage = { unblinded: unblindedMessage.toString() };
-
-  }*/
 
 
 }

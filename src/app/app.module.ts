@@ -10,6 +10,7 @@ import { ClickOutsideDirective } from './click-outside.directive';
 import { SignVerifyComponent } from './components/sign-verify/sign-verify.component';
 import { BlindSignaturesComponent } from './components/blind-signatures/blind-signatures.component';
 import { PaillierComponent } from './components/paillier/paillier.component';
+import { ShamirComponent } from './components/shamir/shamir.component';
 
 @NgModule({
   declarations: [
@@ -20,6 +21,7 @@ import { PaillierComponent } from './components/paillier/paillier.component';
     SignVerifyComponent,
     BlindSignaturesComponent,
     PaillierComponent,
+    ShamirComponent,
 
   ],
   imports: [

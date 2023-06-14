@@ -5,11 +5,13 @@ import { EncryptDecryptComponent } from './components/encrypt-decrypt/encrypt-de
 import { SignVerifyComponent } from './components/sign-verify/sign-verify.component';
 import { BlindSignaturesComponent } from './components/blind-signatures/blind-signatures.component';
 import { PaillierComponent } from './components/paillier/paillier.component';
+import { ShamirComponent } from './components/shamir/shamir.component';
 const routes: Routes = [
   { path: '', component: EncryptDecryptComponent },
   { path: 'sign-verify', component: SignVerifyComponent },
   { path: 'blind-sign', component: BlindSignaturesComponent },
   { path: 'paillier', component: PaillierComponent },
+  { path: 'shamir', component: ShamirComponent },
 ];
 
 @NgModule({
